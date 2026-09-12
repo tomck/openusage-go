@@ -22,7 +22,7 @@ const (
 	defaultChatGPTBaseURL   = "https://chatgpt.com/backend-api"
 	defaultUsageWindowLabel = "all-time"
 
-	maxScannerBufferSize = 8 * 1024 * 1024
+	maxScannerBufferSize = 32 * 1024 * 1024
 	maxHTTPErrorBodySize = 256
 
 	maxBreakdownMetrics = 8
@@ -92,6 +92,46 @@ type creditInfo struct {
 	HasCredits bool     `json:"has_credits"`
 	Unlimited  bool     `json:"unlimited"`
 	Balance    *float64 `json:"balance"`
+}
+
+func (c *creditInfo) UnmarshalJSON(data []byte) error {
+	type Alias creditInfo
+	aux := &struct {
+		Balance interface{} `json:"balance"`
+		*Alias
+	}{
+		Alias: (*Alias)(c),
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	if aux.Balance != nil {
+		switch v := aux.Balance.(type) {
+		case string:
+			s := strings.TrimSpace(v)
+			s = strings.TrimPrefix(s, "$")
+			s = strings.ReplaceAll(s, ",", "")
+			if s == "" {
+				c.Balance = nil
+			} else {
+				f, err := strconv.ParseFloat(s, 64)
+				if err != nil {
+					return err
+				}
+				c.Balance = &f
+			}
+		case float64:
+			f := v
+			c.Balance = &f
+		case int:
+			f := float64(v)
+			c.Balance = &f
+		case float32:
+			f := float64(v)
+			c.Balance = &f
+		}
+	}
+	return nil
 }
 
 type versionInfo struct {
