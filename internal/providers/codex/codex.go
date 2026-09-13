@@ -116,19 +116,21 @@ func (c *creditInfo) UnmarshalJSON(data []byte) error {
 			} else {
 				f, err := strconv.ParseFloat(s, 64)
 				if err != nil {
-					return err
+					return fmt.Errorf("codex credit balance %q: %w", v, err)
 				}
 				c.Balance = &f
 			}
 		case float64:
 			f := v
 			c.Balance = &f
-		case int:
-			f := float64(v)
+		case json.Number:
+			f, err := v.Float64()
+			if err != nil {
+				return fmt.Errorf("codex credit balance %q: %w", v.String(), err)
+			}
 			c.Balance = &f
-		case float32:
-			f := float64(v)
-			c.Balance = &f
+		default:
+			return fmt.Errorf("codex credit balance has unexpected type %T", v)
 		}
 	}
 	return nil

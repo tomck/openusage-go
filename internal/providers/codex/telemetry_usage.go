@@ -662,6 +662,9 @@ func parseTelemetrySessionFileFrom(path string, byteOffset int64, lineNumber int
 	})
 	if len(pending) > 0 {
 		for _, ev := range pending {
+			if strings.TrimSpace(ev.ModelRaw) == "" {
+				ev.ModelRaw = "unknown"
+			}
 			out = append(out, *ev)
 		}
 	}
