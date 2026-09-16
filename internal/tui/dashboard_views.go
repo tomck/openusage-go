@@ -14,6 +14,7 @@ const (
 	dashboardViewTabs    dashboardViewMode = dashboardViewMode(config.DashboardViewTabs)
 	dashboardViewSplit   dashboardViewMode = dashboardViewMode(config.DashboardViewSplit)
 	dashboardViewCompare dashboardViewMode = dashboardViewMode(config.DashboardViewCompare)
+	dashboardViewCompact dashboardViewMode = dashboardViewMode(config.DashboardViewCompact)
 )
 
 type dashboardViewOption struct {
@@ -48,6 +49,11 @@ var dashboardViewOptions = []dashboardViewOption{
 		Label:       "Compare",
 		Description: "Side-by-side panes for active and neighboring provider.",
 	},
+	{
+		ID:          dashboardViewCompact,
+		Label:       "Compact",
+		Description: "One row per provider: usage percent and reset countdown.",
+	},
 }
 
 func normalizeDashboardViewMode(raw string) dashboardViewMode {
@@ -62,6 +68,8 @@ func normalizeDashboardViewMode(raw string) dashboardViewMode {
 		return dashboardViewSplit
 	case string(dashboardViewCompare):
 		return dashboardViewCompare
+	case string(dashboardViewCompact):
+		return dashboardViewCompact
 	case config.DashboardViewList:
 		return dashboardViewSplit
 	default:

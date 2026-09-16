@@ -48,6 +48,8 @@ func (m Model) renderDashboardContent(w, contentH int) string {
 		return m.renderComparePanes(w, contentH)
 	case dashboardViewStacked:
 		return m.renderTilesSingleColumn(w, contentH)
+	case dashboardViewCompact:
+		return m.renderCompactRows(w, contentH)
 	default:
 		return m.renderTiles(w, contentH)
 	}

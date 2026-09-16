@@ -85,7 +85,7 @@ func (m Model) tileGrid(contentW, contentH, n int) (cols, tileW, tileMaxHeight i
 
 func (m Model) tileCols() int {
 	switch m.activeDashboardView() {
-	case dashboardViewStacked, dashboardViewTabs, dashboardViewSplit, dashboardViewCompare:
+	case dashboardViewStacked, dashboardViewTabs, dashboardViewSplit, dashboardViewCompare, dashboardViewCompact:
 		return 1
 	}
 

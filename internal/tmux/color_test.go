@@ -206,3 +206,19 @@ func TestProviderIcon_KnownProvider(t *testing.T) {
 		t.Errorf("claude_code ascii: got %q", g)
 	}
 }
+
+func TestProviderIcon_IDAliases(t *testing.T) {
+	// Go provider IDs that postdate the icon manifest share their glyphs.
+	aliases := map[string]string{
+		"muse_code": "claude_code",
+		"kilocode":  "kilo_code",
+		"kiro":      "kiro_cli",
+	}
+	for from, to := range aliases {
+		for _, tier := range []GlyphTier{GlyphTierASCII, GlyphTierUnicode, GlyphTierNerdfont, GlyphTierCustomFont} {
+			if got, want := ProviderIcon(from, tier), ProviderIcon(to, tier); got != want {
+				t.Errorf("ProviderIcon(%q, %v) = %q, want alias target %q", from, tier, got, want)
+			}
+		}
+	}
+}

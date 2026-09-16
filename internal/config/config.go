@@ -51,6 +51,7 @@ const (
 	DashboardViewTabs    = "tabs"
 	DashboardViewSplit   = "split"
 	DashboardViewCompare = "compare"
+	DashboardViewCompact = "compact"
 )
 
 func (p *DashboardProviderConfig) UnmarshalJSON(data []byte) error {
@@ -118,11 +119,17 @@ func (s *DetailWidgetSection) UnmarshalJSON(data []byte) error {
 }
 
 type DashboardConfig struct {
-	Providers              []DashboardProviderConfig `json:"providers"`
-	View                   string                    `json:"view"`
-	WidgetSections         []DashboardWidgetSection  `json:"widget_sections,omitempty"`
-	DetailSections         []DetailWidgetSection     `json:"detail_sections,omitempty"`
-	HideSectionsWithNoData bool                      `json:"hide_sections_with_no_data,omitempty"`
+	Providers []DashboardProviderConfig `json:"providers"`
+	View      string                    `json:"view"`
+	// CompactIcons selects the provider-glyph tier for compact-view rows:
+	// "off" (default — status shapes, no font needed), "unicode" (emoji,
+	// works everywhere), "nerdfont", "customfont" (the bundled OpenUsage
+	// icon font — the terminal must have it wired up, see
+	// `openusage tmux font setup`), or "ascii" (bracketed labels).
+	CompactIcons           string                   `json:"compact_icons,omitempty"`
+	WidgetSections         []DashboardWidgetSection `json:"widget_sections,omitempty"`
+	DetailSections         []DetailWidgetSection    `json:"detail_sections,omitempty"`
+	HideSectionsWithNoData bool                     `json:"hide_sections_with_no_data,omitempty"`
 	// HideCosts is the global default for suppressing monetary metrics.
 	// nil means "fall through to the plan-aware auto policy" (see
 	// core.ResolveHideCosts).
@@ -498,7 +505,7 @@ func normalizeDashboardProviders(in []DashboardProviderConfig) []DashboardProvid
 
 func normalizeDashboardView(view string) string {
 	switch strings.ToLower(strings.TrimSpace(view)) {
-	case DashboardViewGrid, DashboardViewStacked, DashboardViewTabs, DashboardViewSplit, DashboardViewCompare:
+	case DashboardViewGrid, DashboardViewStacked, DashboardViewTabs, DashboardViewSplit, DashboardViewCompare, DashboardViewCompact:
 		return strings.ToLower(strings.TrimSpace(view))
 	case DashboardViewList:
 		// Legacy view id: map to split navigator/detail layout.

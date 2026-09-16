@@ -239,6 +239,16 @@ var providerIcons = map[GlyphTier]map[string]string{
 	},
 }
 
+// providerIconAliases maps Go provider IDs to the icon-manifest keys they
+// share glyphs with. The manifest predates these IDs; without the alias the
+// flagship Muse provider (and kilocode/kiro) would degrade to the generic
+// sparkles everywhere a logo is asked for.
+var providerIconAliases = map[string]string{
+	"muse_code": "claude_code",
+	"kilocode":  "kilo_code",
+	"kiro":      "kiro_cli",
+}
+
 // ProviderIcon returns the glyph for a provider in the given tier. The custom
 // font is a partial overlay: providers with a bundled glyph use it, and any
 // provider without one falls back to the unicode tier so the segment is never
@@ -246,6 +256,9 @@ var providerIcons = map[GlyphTier]map[string]string{
 // fall back to unicode.
 func ProviderIcon(provider string, tier GlyphTier) string {
 	p := strings.ToLower(strings.TrimSpace(provider))
+	if alias, ok := providerIconAliases[p]; ok {
+		p = alias
+	}
 	if tier == GlyphTierCustomFont {
 		if g := customFontIcon(p); g != "" {
 			return g

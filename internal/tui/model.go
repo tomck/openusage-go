@@ -206,6 +206,7 @@ type Model struct {
 	screen screenTab
 
 	dashboardView dashboardViewMode
+	compactGlyphs string // normalized dashboard.compact_icons ("off" = status shapes)
 
 	analyticsFilter      filterState
 	analyticsSortBy      int             // 0=cost↓, 1=name↑, 2=tokens↓
@@ -508,6 +509,7 @@ func (m Model) shouldUsePanelScroll() bool {
 
 func (m *Model) applyDashboardConfig(dashboardCfg config.DashboardConfig, accounts []core.AccountConfig) {
 	m.dashboardView = normalizeDashboardViewMode(dashboardCfg.View)
+	m.compactGlyphs = normalizeCompactGlyphs(dashboardCfg.CompactIcons)
 
 	accountOrder := make([]string, 0, len(accounts))
 	seenAccounts := make(map[string]bool, len(accounts))

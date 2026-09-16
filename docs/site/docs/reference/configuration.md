@@ -133,8 +133,30 @@ Edit interactively via the Telemetry settings tab (<kbd>,</kbd> then <kbd>6</kbd
 | `tabs` | Focused pane plus a tab strip. |
 | `split` | Tile list left / detail right. |
 | `compare` | Two adjacent provider panes. |
+| `compact` | One dense row per provider: usage percent and reset countdown. |
 
 A viewport too narrow for the chosen view is auto-fallen-back to `stacked`.
+
+### `dashboard.compact_icons`
+
+Optional provider logos for `compact`-view rows. Default `"off"` (status
+shapes, no font needed anywhere).
+
+| Value | Shows | Needs |
+|---|---|---|
+| `unicode` | emoji (`🤖`, `🧠`, …) | any modern terminal |
+| `nerdfont` | Nerd Font brand glyphs, brand-tinted | a Nerd Font as your terminal font |
+| `customfont` | real provider logos, brand-tinted | the bundled icon font wired up (`openusage tmux font setup`) |
+| `ascii` | bracketed labels (`[copilot]`), replaces the name | nothing |
+
+```json
+{ "dashboard": { "view": "compact", "compact_icons": "unicode" } }
+```
+
+Unknown providers fall back to the generic `✨`; providers without a bundled
+glyph (e.g. `azure_openai`) degrade to emoji in the `customfont` tier rather
+than rendering blank. `muse_code`, `kilocode`, and `kiro` share the
+`claude_code`, `kilo_code`, and `kiro_cli` glyphs.
 
 ### `dashboard.providers`
 
