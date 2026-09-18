@@ -1,1 +1,1 @@
-Attribution: authored by Muse Spark 1.3 in this OpenCode session (NOT a muse-code CLI thread). All prior work everywhere was Spark 1.2 - 1.3-free was not offered in OpenCode until after the weekly 1.2 usage burned. 1.3 commits on fix/codex-gpt6-thread-settings are c756a72, 9e91e23, 428af7b.
+VERIFIED via opencode sqlite (session ses_f7d7174b, per-message modelID): authored by Muse Spark 1.2 on 2026-09-12 (commit tool call 22:51 UTC, modelID muse-spark-1.2-contributor-free). NOT 1.3 - an earlier note claiming 1.3 was wrong (transcript mixes both models' turns).
