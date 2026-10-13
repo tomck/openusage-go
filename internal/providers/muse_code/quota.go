@@ -710,15 +710,25 @@ func quotaPlanName(tier string) string {
 }
 
 // PlanNamePathKey is the provider_paths key for a user-attested plan label
-// ("Everyday Usage", "High Usage", "Power Usage"). The quota probe only
-// returns an opaque account-scoped tier ID, so the display name cannot be
-// derived — the subscriber sets it once and it wins over the tier-derived
-// value everywhere the tile reads plan_name.
+// ("Everyday Usage", "High Usage", "Power Usage"). It is a fallback only:
+// the account endpoint returns the server-provided display name
+// (subs_tier_name), which always wins so upgrades/downgrades self-correct.
+// The override applies solely to the Responses-probe path, whose opaque
+// account-scoped tier ID cannot be turned into a display name.
 const PlanNamePathKey = "plan_name"
 
+// museQuotaServerPlanAttr marks a server-provided display name (subs_tier_name
+// from the account endpoint). applyPlanNameOverride leaves it alone.
+const museQuotaServerPlanAttr = "muse_quota_server_plan"
+
 // applyPlanNameOverride stamps the user-attested plan label onto the
-// snapshot, winning over the tier-derived plan_name from enrichment.
+// snapshot when the server provided no display name (probe path with an
+// opaque tier ID). A server-provided name always wins so plan changes
+// self-correct instead of going stale behind a saved label.
 func applyPlanNameOverride(acct core.AccountConfig, snap *core.UsageSnapshot) {
+	if _, ok := snap.Attributes[museQuotaServerPlanAttr]; ok {
+		return
+	}
 	name := strings.TrimSpace(acct.Path(PlanNamePathKey, ""))
 	if name == "" {
 		return
@@ -748,6 +758,10 @@ func applySubscriptionUsage(snap *core.UsageSnapshot, sub *subscriptionUsage) {
 		name := sub.PlanName
 		if name == "" {
 			name = quotaPlanName(sub.Tier)
+		} else {
+			// Real server display name (subs_tier_name): mark it so the
+			// saved plan_name override below leaves it alone.
+			snap.SetAttribute(museQuotaServerPlanAttr, name)
 		}
 		snap.Raw["plan_name"] = name
 	}

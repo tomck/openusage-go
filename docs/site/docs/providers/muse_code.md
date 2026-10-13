@@ -39,7 +39,7 @@ Triggers when any of these exist: the `muse` binary, `$XDG_DATA_HOME/muse/sessio
 }
 ```
 
-Set `provider_paths.plan_name` (`Everyday Usage`, `High Usage`, or `Power Usage`) to name the plan on the tile — the quota probe returns an opaque tier ID.
+The plan name comes from the server automatically (`subs_tier_name` on the account endpoint), so upgrades/downgrades self-correct. `provider_paths.plan_name` (`Everyday Usage`, `High Usage`, or `Power Usage`) is only a fallback for API-key-only setups, where the quota probe returns an opaque tier ID.
 
 ## Credentials and the keychain prompt
 
@@ -58,7 +58,7 @@ When quota is exhausted the tile header shows `LIMIT` with the reset time instea
 
 ### What's NOT tracked
 
-- **Plan display name.** The probe returns an opaque tier ID; set `provider_paths.plan_name`.
+- **Plan display name on API-key-only setups.** The probe returns an opaque tier ID; set `provider_paths.plan_name` as a fallback (ignored whenever the server provides a name).
 - **Browser quota.** No browser session is read; everything comes from CLI credentials.
 
 ### How fresh is the data?

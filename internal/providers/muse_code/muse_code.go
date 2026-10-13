@@ -50,7 +50,7 @@ func New() *Provider {
 					"Install Muse Code, run `muse login`, and complete at least one session.",
 					"openusage auto-detects the sessions dir and auth file; no configuration required.",
 					"Quota meters (experimental): automatic via the macOS keychain (one approval prompt per launch) or META_API_KEY; no browser required.",
-					"Plan label: the quota probe returns an opaque tier ID, so set provider_paths.plan_name (Everyday Usage, High Usage, or Power Usage) to name the plan on the tile.",
+					"Plan label: automatic from the server (subs_tier_name); provider_paths.plan_name is only a fallback for the API-key probe path, whose opaque tier ID cannot be turned into a name.",
 				},
 			},
 			Dashboard: dashboardWidget(),
